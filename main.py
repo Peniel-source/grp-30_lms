@@ -10,7 +10,6 @@ print("Hello, welcome to Group 30's LMS")
 print("--------------------------------")
 
 
-# Password verification helper
 def check_password(password: str, hashed: str) -> bool:
     return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
 
@@ -18,7 +17,6 @@ def login():
     print("Welcome to our login page.")
     print("--------------------------")
 
-    # Email pattern matching
     pattern_student = r"^[a-zA-Z0-9._%+-]+@alustudent\.com$"
     pattern_education = r"^[a-zA-Z0-9._%+-]+@alueducation\.com$"
     pattern_admin = r"^[a-zA-Z0-9._%+-]+@aluadmin\.com$"
@@ -26,7 +24,6 @@ def login():
     email = input("Enter your email: ").strip()
     password = input("Enter your password: ")
 
-    # Attempt to retrieve user record from DB
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT password_hash, role FROM users WHERE email = %s", (email,))
@@ -37,10 +34,8 @@ def login():
     if result:
         stored_hash, stored_role = result
         if check_password(password, stored_hash):
-            #  Password matched
             print(f" Login successful. Welcome {stored_role}!")
 
-            # Match email to expected role
             if re.match(pattern_student, email) and stored_role == "student":
                 menus.Student_menu()
             elif re.match(pattern_education, email) and stored_role == "instructor":
