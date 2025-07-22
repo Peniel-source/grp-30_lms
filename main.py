@@ -9,6 +9,26 @@ print()
 print("Hello, welcome to Group 30's LMS")
 print("--------------------------------")
 
+def main():
+    while True:
+        try:
+            print("Authentication:\n1. Login\n2. Sign up\n3. Exit LMS")
+            choice = int(input("Enter choice (1, 2, 3): "))
+            while choice not in [1, 2, 3]:
+                    print("Invalid choice. Please enter 1, 2, or 3.")
+                    choice = int(input("Enter choice (1, 2, 3): "))
+            if choice == 1:
+                login()
+                break
+            elif choice == 2:
+                sign_up()
+                break
+            elif choice == 3:
+                exit()
+            else:                
+                print("Invalid choice. Please enter 1, 2, or 3.")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
 
 def check_password(password: str, hashed: str) -> bool:
     return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
@@ -74,26 +94,7 @@ def sign_up():
 
     print(" Signup request submitted. Awaiting admin approval.")
 
-def main():
-    while True:
-        try:
-            print("Authentication:\n1. Login\n2. Sign up\n3. Exit LMS")
-            choice = int(input("Enter choice (1, 2, 3): "))
-            while choice not in [1, 2, 3]:
-                    print("Invalid choice. Please enter 1, 2, or 3.")
-                    choice = int(input("Enter choice (1, 2, 3): "))
-            if choice == 1:
-                login()
-                break
-            elif choice == 2:
-                sign_up()
-                break
-            elif choice == 3:
-                exit()
-            else:                
-                print("Invalid choice. Please enter 1, 2, or 3.")
-        except ValueError:
-            print("Invalid input. Please enter a number.")
+
         
 
 if __name__=='__main__':
