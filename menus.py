@@ -1,8 +1,9 @@
 # import features.admin
 # import features.instructor
 # import features.student
+import features.signup_approval
 
-def Student_menu():
+def Student_menu(): 
     while True:
         try:
             print("What would you like to do?:\n-------------------------")
@@ -40,7 +41,11 @@ def Admin_menu():
             while ac not in [1, 2, 3, 4, 5]:
                 print("Invalid choice. Please enter a number, 1-4.")
                 ac= int(input("Enter your choice (1–5): "))
-            break
+            
+            if ac == 5:
+                features.signup_approval.admin_signup_approval_menu()
+            break         
+        
         except ValueError:
             print("Invalid input. Please enter a number.")
             
