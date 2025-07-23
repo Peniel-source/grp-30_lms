@@ -1,132 +1,52 @@
-from .db import get_connection
+# import features.admin
+# import features.instructor
+# import features.student
+import features.signup_approval
 
-def create_user_table():
-    conn = get_connection()
-    try:
-        cursor = conn.cursor()
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS users (
-                id INT PRIMARY KEY AUTO_INCREMENT,
-                full_name VARCHAR(100),
-                email VARCHAR(100) UNIQUE NOT NULL,
-                role ENUM('admin', 'instructor', 'student') NOT NULL,
-                password_hash VARCHAR(255) NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-        """)
-        conn.commit()
-    finally:
-        cursor.close()
-        conn.close()
+def Student_menu(): 
+    while True:
+        try:
+            print("What would you like to do?:\n-------------------------")
+            print("1. View Courses\n2. Check Academic Progress\n3. Check Financial Standing")
+            print("4. Disciplinary Standing\n5. Request for Transcripts")
+            sc= int(input("Enter your choice (1–5): "))
+            while sc not in [1, 2, 3, 4, 5]:
+                print("Invalid choice. Please enter a number, 1-5.")
+                sc= int(input("Enter your choice (1–5): "))              
+            break
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+            
 
-def create_courses_table():
-    conn = get_connection()
-    try:
-        cursor = conn.cursor()
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS courses (
-                id INT PRIMARY KEY AUTO_INCREMENT,
-                title VARCHAR(100),
-                description TEXT,
-                instructor_id INT,
-                FOREIGN KEY (instructor_id) REFERENCES users(id)
-            );
-        """)
-        conn.commit()
-    finally:
-        cursor.close()
-        conn.close()
+def Instructor_menu():
+    while True:
+        try:
+            print("What would you like to do?:\n-------------------------")
+            print("1. Check Instructed Courses\n2. Create Assignments\n3. Check Attendance\n4. Check Student Records")
+            ic= int(input("Enter your choice (1–4): "))
+            while ic not in [1, 2, 3, 4]:
+                print("Invalid choice. Please enter a number, 1-4.")
+                ic= int(input("Enter your choice (1–4): "))
+            break
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+            
 
-def create_enrollments_table():
-    conn = get_connection()
-    try:
-        cursor = conn.cursor()
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS enrollments (
-                id INT PRIMARY KEY AUTO_INCREMENT,
-                user_id INT,
-                course_id INT,
-                enrolled_on DATE,
-                FOREIGN KEY (user_id) REFERENCES users(id),
-                FOREIGN KEY (course_id) REFERENCES courses(id)
-            );
-        """)
-        conn.commit()
-    finally:
-        cursor.close()
-        conn.close()
+def Admin_menu():
+    while True:
+        try:
+            print("What would you like to do?:\n-------------------------")
+            print("1. Manage Students\n2. Assign Instructor\n3. Issue Transcripts\n4. Generate Report\n5. View Signup Requests")
+            ac= int(input("Enter your choice (1–5): "))
+            while ac not in [1, 2, 3, 4, 5]:
+                print("Invalid choice. Please enter a number, 1-4.")
+                ac= int(input("Enter your choice (1–5): "))
+            
+            if ac == 5:
+                features.signup_approval.admin_signup_approval_menu()
+            break         
+        
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+            
 
-def create_attendance_table():
-    conn = get_connection()
-    try:
-        cursor = conn.cursor()
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS attendance (
-                id INT PRIMARY KEY AUTO_INCREMENT,
-                user_id INT,
-                course_id INT,
-                status ENUM('present', 'absent', 'excused') NOT NULL,
-                date DATE NOT NULL,
-                notes TEXT,
-                FOREIGN KEY (user_id) REFERENCES users(id),
-                FOREIGN KEY (course_id) REFERENCES courses(id)
-            );
-        """)
-        conn.commit()
-    finally:
-        cursor.close()
-        conn.close()
-
-def create_student_status_table():
-    conn = get_connection()
-    try:
-        cursor = conn.cursor()
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS student_status (
-                id INT PRIMARY KEY AUTO_INCREMENT,
-                user_id INT,
-                course_id INT,
-                status_summary TEXT,
-                performance_rating ENUM('excellent', 'good', 'average', 'poor'),
-                updated_on DATE,
-                FOREIGN KEY (user_id) REFERENCES users(id),
-                FOREIGN KEY (course_id) REFERENCES courses(id)
-            );
-        """)
-        conn.commit()
-    finally:
-        cursor.close()
-        conn.close()
-
-def create_pending_signups_table():
-    conn = get_connection()
-    try:
-        cursor = conn.cursor()
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS pending_signups (
-                id INT PRIMARY KEY AUTO_INCREMENT,
-                full_name VARCHAR(100),
-                email VARCHAR(100) UNIQUE NOT NULL,
-                password_hash VARCHAR(255) NOT NULL,
-                role ENUM('student', 'instructor') NOT NULL,
-                requested_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-        """)
-        conn.commit()
-    finally:
-        cursor.close()
-        conn.close()
-
-def setup_all_tables():
-    create_user_table()
-    create_courses_table()
-    create_enrollments_table()
-    create_attendance_table()
-    create_student_status_table()
-    create_pending_signups_table()
-
-
-
-    
-
-    
