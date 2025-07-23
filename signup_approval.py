@@ -1,26 +1,28 @@
 import re
-from ..data.db import get_connection
+from data.db import get_connection
 
-def infer_role_from_email(email):
+
+def get_role_from_email(email):
     email = email.lower().strip()
-    if re.match(r"^[\w\.-]+@alustudent\.com$", email):
+    if re.match(r"^[a-zA-Z0-9._%+-]+@alustudent\.com$", email):
         return "student"
-    elif re.match(r"^[\w\.-]+@alueducation\.com$", email):
+    elif re.match(r"^[a-zA-Z0-9._%+-]+@alueducation\.com$", email):
         return "instructor"
-    elif re.match(r"^[\w\.-]+@aluadmin\.com$", email):
+    elif re.match(r"^[a-zA-Z0-9._%+-]+@aluadmin\.com$", email):
         return "admin"
-    return None  # Unrecognized domain
+    else:
+        return None  
 
 def view_pending_requests():
-    conn = get_connection()
-    cursor = conn.cursor()
+    connect = get_connection()
+    cursor = connect.cursor()
     cursor.execute("SELECT full_name, email, requested_at FROM pending_signups")
     requests = cursor.fetchall()
     cursor.close()
-    conn.close()
+    connect.close()
 
     if requests:
-        print("\ Pending Sign-Up Requests:")
+        print("Pending Sign-Up Requests:")
         for i, req in enumerate(requests, 1):
             print(f"{i}. {req[0]} — {req[1]} — Requested on {req[2]}")
     else:
@@ -28,15 +30,15 @@ def view_pending_requests():
 
 def approve_user(email):
     email = email.lower().strip()
-    conn = get_connection()
-    cursor = conn.cursor()
+    connect = get_connection()
+    cursor = connect.cursor()
 
     # Check if already approved
     cursor.execute("SELECT id FROM users WHERE email = %s", (email,))
     if cursor.fetchone():
         print(" This email is already registered. Cannot approve again.")
         cursor.close()
-        conn.close()
+        connect.close()
         return
 
     # Retrieve from pending_signups
@@ -44,7 +46,7 @@ def approve_user(email):
     user = cursor.fetchone()
 
     if user:
-        role = infer_role_from_email(user[1])
+        role = get_role_from_email(user[1])
         if role:
             cursor.execute("""
                 INSERT INTO users (full_name, email, password_hash, role)
@@ -52,42 +54,42 @@ def approve_user(email):
             """, (user[0], user[1], user[2], role))
 
             cursor.execute("DELETE FROM pending_signups WHERE email = %s", (email,))
-            conn.commit()
+            connect.commit()
             print(f"{user[0]} ({role}) has been approved and added to users.")
         else:
             print(" Invalid email domain. Unable to determine role.")
     else:
-        print(" No pending signup found for that email.")
+        print("No pending signup found for that email.")
 
     cursor.close()
-    conn.close()
+    connect.close()
 
 def reject_user(email):
     email = email.lower().strip()
-    conn = get_connection()
-    cursor = conn.cursor()
+    connect = get_connection()
+    cursor = connect.cursor()
 
     cursor.execute("SELECT full_name FROM pending_signups WHERE email = %s", (email,))
     user = cursor.fetchone()
 
     if user:
         cursor.execute("DELETE FROM pending_signups WHERE email = %s", (email,))
-        conn.commit()
+        connect.commit()
         print(f" {user[0]}'s request has been rejected and removed.")
     else:
         print(" No pending signup found for that email.")
 
     cursor.close()
-    conn.close()
+    connect.close()
 
 def admin_signup_approval_menu():
     while True:
         print("\n Admin Approval Menu")
         print("----------------------")
-        print("[1] View Pending Requests")
-        print("[2] Approve Signup by Email")
-        print("[3] Reject Signup by Email")
-        print("[4] Exit")
+        print("1. View Pending Requests")
+        print("2. Approve Signup by Email")
+        print("3. Reject Signup by Email")
+        print("4. Exit")
 
         choice = input("Choose an option: ").strip()
 
