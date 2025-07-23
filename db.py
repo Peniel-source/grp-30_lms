@@ -9,29 +9,3 @@ def get_connection():
         port=25302,
         ssl_ca=r"C:\Users\HP\Downloads\ca.pem"  # Use raw string or forward slashes to avoid unicodeescape error
     )
-
-
-# cursor = conn.cursor()
-# cursor.execute("SHOW TABLES")
-# tables = cursor.fetchall()
-
-# if tables:
-#     print("Tables in database:")
-#     for (table,) in tables:
-#         print(f"- {table}")
-# else:
-#     print("✅ Connected successfully — but no tables found yet.")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
