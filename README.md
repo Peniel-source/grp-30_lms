@@ -1,5 +1,7 @@
      Project Overview
    This is Learning Management System done built in Python and MYSQL RDBMS. This CLI(Command Line Interface) based app allows users to create the account with the full name, email and password. The users are students, instructors and admin. The app has features like coursetracking, academic progress, viewing financial, desciplinary standing, and much more.
+       
+         
        Features by role
        Students:
 The student should login with @alustudent.com email. Then be able to:
